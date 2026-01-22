@@ -44,11 +44,21 @@ async def train_voice(voice_id: str = Form(...)):
     }
 
 @router.post("/preview")
-def preview_voice(voice_id: str = Form(...), text: str = Form(...)):
+def preview_voice(
+    voice_id: str = Form(...), 
+    text: str = Form(...),
+    temperature: float = Form(0.4),
+    length_penalty: float = Form(1.8),
+    repetition_penalty: float = Form(3.0),
+    top_k: int = Form(50),
+    top_p: float = Form(0.85),
+    sentence_split: bool = Form(True)
+):
     """
     Generate a preview audio file using the local TTS engine (Coqui).
     """
     print(f"--- [BACKEND] Received Preview Request for {voice_id} ---")
+    print(f"--- [BACKEND] TTS Params: temp={temperature}, len_pen={length_penalty}, rep_pen={repetition_penalty}, top_k={top_k}, top_p={top_p}, split={sentence_split} ---")
     
     # 1. Find reference audio
     # Try wav then mp3 (simple lookup)
@@ -75,12 +85,22 @@ def preview_voice(voice_id: str = Form(...), text: str = Form(...)):
     output_filename = f"preview_{voice_id}_{uuid.uuid4().hex[:6]}.wav"
     output_path = os.path.join(GENERATED_DIR, output_filename)
 
-    # 3. Call TTS Engine
+    # 3. Call TTS Engine with custom parameters
     try:
         print("--- [BACKEND] Calling TTS Engine (Model Load + Inference)... ---")
         # Note: clone_voice synchronous in this version of service, wrapped in async def is fine or offload to thread
         # For simplicity in MVP we run it direct. It might block event loop briefly.
-        tts_engine.clone_voice(text, ref_path, output_path)
+        tts_engine.clone_voice(
+            text, 
+            ref_path, 
+            output_path,
+            temperature=temperature,
+            length_penalty=length_penalty,
+            repetition_penalty=repetition_penalty,
+            top_k=top_k,
+            top_p=top_p,
+            sentence_split=sentence_split
+        )
         print("--- [BACKEND] TTS Generation Complete ---")
     except Exception as e:
         print(f"--- [BACKEND] TTS Error: {e} ---")

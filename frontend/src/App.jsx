@@ -38,17 +38,7 @@ function App() {
             <NavItem to="/library" icon={<Music />} label="Music Library" />
           </nav>
 
-          <div className="p-6 pt-2">
-            <div className="p-5 rounded-2xl bg-black/40 border border-white/5 backdrop-blur-sm">
-              <div className="flex justify-between items-center mb-2">
-                <p className="text-xs text-white/50 font-medium">Monthly Credits</p>
-                <span className="text-xs font-bold text-white">150 / 500</span>
-              </div>
-              <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-primary to-secondary w-[35%] rounded-full shadow-[0_0_10px_rgba(10,132,255,0.5)]" />
-              </div>
-            </div>
-          </div>
+
         </aside>
 
         {/* Main Content Area */}
